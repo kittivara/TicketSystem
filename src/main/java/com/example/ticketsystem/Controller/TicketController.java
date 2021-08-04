@@ -3,10 +3,13 @@ package com.example.ticketsystem.Controller;
 import com.example.ticketsystem.Model.Ticket;
 import com.example.ticketsystem.Service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -49,6 +52,14 @@ public class TicketController {
         return ticket != null ? ResponseEntity.ok(ticket)
                 :ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/lists")
+    public List<Ticket> findTicketByPaginated(@RequestParam("page") int page,
+                                   @RequestParam("size") int size) {
+        Page<Ticket> resultPage = ticketService.findTicketByPaginated(page, size);
+        return resultPage.getContent();
+    }
+
 
 
 

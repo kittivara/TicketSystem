@@ -4,6 +4,9 @@ import com.example.ticketsystem.Model.Ticket;
 import com.example.ticketsystem.Repository.TicketRepository;
 import com.example.ticketsystem.Utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,5 +41,11 @@ public class TicketService {
         ticketReq.setStatus(this.reqStatus);
         return ticketRepository.findAllById(id) != null ?
                 ticketRepository.save(ticketReq) : null;
+    }
+
+    public Page<Ticket> findTicketByPaginated (int page , int size)
+    {
+        Page<Ticket> pageTicket = ticketRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "status")));
+        return pageTicket;
     }
 }
