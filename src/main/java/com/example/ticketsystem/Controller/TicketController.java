@@ -3,7 +3,9 @@ package com.example.ticketsystem.Controller;
 import com.example.ticketsystem.Model.Ticket;
 import com.example.ticketsystem.Service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="/ticket")
+@RequestMapping(path="/tickets")
 public class TicketController {
     private TicketService ticketService;
 
@@ -22,10 +24,17 @@ public class TicketController {
         this.ticketService = ticketService;
     }
 
-    @GetMapping("/list")
-    public List<Ticket> ticketList()
-    {
-        return ticketService.getTicketList();
+
+    @GetMapping
+    public List<Ticket> getTickets(@RequestParam(value = "page", required=false) Integer page,
+                                              @RequestParam(value = "size", required=false) Integer size) {
+        if(page == null && size == null)
+        {
+            page = 1;
+            size = 3;
+        }
+        Page<Ticket> resultPage = ticketService.getTickets(page, size);
+        return resultPage.getContent();
     }
 
     @GetMapping("{id}")
@@ -52,15 +61,4 @@ public class TicketController {
         return ticket != null ? ResponseEntity.ok(ticket)
                 :ResponseEntity.notFound().build();
     }
-
-    @GetMapping("/lists")
-    public List<Ticket> findTicketByPaginated(@RequestParam("page") int page,
-                                   @RequestParam("size") int size) {
-        Page<Ticket> resultPage = ticketService.findTicketByPaginated(page, size);
-        return resultPage.getContent();
-    }
-
-
-
-
 }

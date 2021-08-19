@@ -9,22 +9,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class TicketService {
     private TicketRepository ticketRepository;
     private final Util util = new Util();
     private String reqStatus;
-    private String dateToString;
 
     @Autowired
     public TicketService(TicketRepository ticketRepository) { this.ticketRepository = ticketRepository; }
 
-    public List<Ticket> getTicketList()
-    {
-        return ticketRepository.findAll();
-    }
 
     public Ticket getTicketById(Long id) { return ticketRepository.findAllById(id); }
 
@@ -43,7 +37,7 @@ public class TicketService {
                 ticketRepository.save(ticketReq) : null;
     }
 
-    public Page<Ticket> findTicketByPaginated (int page , int size)
+    public Page<Ticket> getTickets (int page,int size)
     {
         Page<Ticket> pageTicket = ticketRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "status")));
         return pageTicket;
